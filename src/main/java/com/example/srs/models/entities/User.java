@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class User extends Person {
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +37,9 @@ public class User extends Person {
     @Column(unique = true, nullable = false)
     @Email(message = "Email không hợp lệ")
     private String email;
+
+    @Embedded
+    private Person person;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

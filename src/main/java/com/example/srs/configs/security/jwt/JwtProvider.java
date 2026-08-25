@@ -24,7 +24,7 @@ public class JwtProvider {
     private int expired;
 
     public String generateToken(UserPrinciple userPrinciple){
-        Date dateExpiration = new Date(new Date().getTime() + expired*1000);
+        Date dateExpiration = new Date(new Date().getTime() + expired * 1000);
         SecretKey key= Keys.hmacShaKeyFor(
                 secretKey.getBytes(StandardCharsets.UTF_8)
         );

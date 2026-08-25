@@ -19,6 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Component
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
+
     private final JwtProvider jwtProvider;
     private final UserDetailService userDetailService;
 
@@ -44,7 +45,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     }
 
     public String getTokenFromRequest(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+;        String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             return token.substring(7);
         }

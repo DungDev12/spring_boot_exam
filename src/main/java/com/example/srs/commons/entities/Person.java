@@ -1,13 +1,12 @@
 package com.example.srs.commons.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-@MappedSuperclass
+@Embeddable
 @Getter
 @Setter
 @JsonInclude(value = JsonInclude.Include.NON_NULL)

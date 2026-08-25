@@ -1,6 +1,8 @@
 package com.example.srs.configs.security;
 
-import com.example.srs.securities.CustomAccessDenied;
+import com.example.srs.configs.security.jwt.JwtAuthTokenFilter;
+import com.example.srs.configs.security.jwt.JwtEntryPoint;
+import com.example.srs.configs.security.jwt.CustomAccessDenied;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -21,21 +24,25 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final CustomAccessDenied customAccessDenied;
+    private final JwtAuthTokenFilter jwtAuthTokenFilter;
+    private final JwtEntryPoint jwtEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
+            HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll();
-                    auth.requestMatchers("/api/users/**").permitAll();
+                    auth.requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll();
+                    auth.requestMatchers("/api/users/**").hasRole("ADMIN");
                 })
                 .sessionManagement(auth ->
                         auth.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
-                        ));
+                        ))
+                .exceptionHandling(
+                        exception->exception.authenticationEntryPoint(jwtEntryPoint).accessDeniedHandler(customAccessDenied))
+                .addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
