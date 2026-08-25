@@ -2,7 +2,7 @@ package com.example.srs.enums;
 
 public enum ERRORCODE {
     USER_ALREADY_EXISTS,
-    ERROR_VALIDATION,
+    INVALID_INPUT_DATA,
     //401
     UNAUTHORIZED,
     //403

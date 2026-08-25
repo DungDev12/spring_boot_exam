@@ -32,7 +32,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
                 authException.getMessage()
         );
 
-        ErrorResponse<?> errorResponse = ErrorResponse.error(false, ERRORCODE.UNAUTHORIZED,"Authentication is required");
+        ErrorResponse<?> errorResponse = ErrorResponse.error(false, ERRORCODE.UNAUTHORIZED,"Authentication is required", 401);
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         extracted(response);

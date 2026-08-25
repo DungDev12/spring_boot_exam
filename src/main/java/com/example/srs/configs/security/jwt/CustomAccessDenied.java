@@ -26,7 +26,7 @@ public class CustomAccessDenied implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.warn("CustomAccessDenied(FORBIDDEN): {}", accessDeniedException.getMessage());
 
-        ErrorResponse<?> errorResponse = ErrorResponse.error(false, ERRORCODE.FORBIDDEN,"Forbidden is required");
+        ErrorResponse<?> errorResponse = ErrorResponse.error(false, ERRORCODE.FORBIDDEN,"Forbidden is required", 403);
 
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json");
