@@ -17,4 +17,8 @@ public class UserPermission {
     ) {
         return currentUserService.getCurrentUserId().equals(userId);
     }
+
+    public boolean IsAdmin(){
+        return currentUserService.isAdmin();
+    }
 }

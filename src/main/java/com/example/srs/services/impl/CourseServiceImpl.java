@@ -68,8 +68,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Page<CourseResponse> getAll(CourseFilterRequest filter, Pageable pageable) {
         UserPrinciple user = currentUserService.getCurrentUser();
-        boolean isAdmin = user.getAuthorities().stream().anyMatch(role ->
-                Objects.equals(role.getAuthority(), "ROLE_ADMIN"));
+        boolean isAdmin = currentUserService.isAdmin();
         StatusCourses status = filter.status();
         if(!isAdmin){
             status = StatusCourses.PUBLISHED;

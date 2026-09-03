@@ -6,11 +6,15 @@ import com.example.srs.models.entities.dto.request.course.CreateCourseRequest;
 import com.example.srs.models.entities.dto.request.course.UpdateCourseRequest;
 import com.example.srs.models.entities.dto.request.course.UpdateCourseStatusRequest;
 import com.example.srs.models.entities.dto.request.lesson.CreateLessonRequest;
+import com.example.srs.models.entities.dto.request.review.CreateReviewRequest;
+import com.example.srs.models.entities.dto.request.review.ReviewFilterRequest;
 import com.example.srs.models.entities.dto.response.ApiResponse;
 import com.example.srs.models.entities.dto.response.course.CourseResponse;
 import com.example.srs.models.entities.dto.response.lesson.LessonResponse;
+import com.example.srs.models.entities.dto.response.review.ReviewResponse;
 import com.example.srs.services.impl.CourseServiceImpl;
 import com.example.srs.services.impl.LessonServiceImpl;
+import com.example.srs.services.impl.ReviewServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +33,7 @@ public class CourseController {
 
     private final CourseServiceImpl courseService;
     private final LessonServiceImpl lessonService;
+    private final ReviewServiceImpl reviewService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<CourseResponse>>> getAll(
@@ -122,6 +127,38 @@ public class CourseController {
                 .body(ApiResponse.success(
                         lessonService.createLesson(courseId, request),
                         "Thêm danh bài học mới vào khoá học vào ID: "+ courseId +" thành công"
+                ));
+    }
+
+    @PostMapping("/{courseId}/reviews")
+    public ResponseEntity<ApiResponse<ReviewResponse>> createReview(
+            @PathVariable Long courseId,
+            @Valid @RequestBody CreateReviewRequest request
+            ){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(
+                        reviewService.createReview(courseId,request),
+                        "Tạo đánh giá thành công"
+                ));
+    }
+
+    @GetMapping("/{courseId}/reviews")
+    public ResponseEntity<?> getAllReview(
+            @PathVariable Long courseId,
+            @Valid @ModelAttribute ReviewFilterRequest filter,
+            @PageableDefault(
+                    page = 0,
+                    size = 10,
+                    sort = "id",
+                    direction = Sort.Direction.ASC
+            )Pageable pageable
+            ){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.pageSuccess(
+                        reviewService.getAllAndSearch(courseId,filter,pageable),
+                        "Lấy danh sách bình luận theo thành công"
                 ));
     }
 }

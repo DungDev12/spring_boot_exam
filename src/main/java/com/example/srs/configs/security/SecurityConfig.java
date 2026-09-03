@@ -87,6 +87,11 @@ public class SecurityConfig {
                                 "/api/enrollments",
                                 "/api/enrollments/**"
                         ).hasRole("STUDENT")
+                        // REVIEW - STUDENT
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/courses/*/reviews"
+                        ).hasRole("STUDENT")
 
                         // AUTHENTICATED USER
                         .requestMatchers(
@@ -108,7 +113,6 @@ public class SecurityConfig {
                                 "/api/courses",
                                 "/api/courses/**",
                                 "/api/lessons/**"
-
                         ).authenticated()
 
                         // NOTIFICATION - AUTH
@@ -119,6 +123,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/api/notifications/*/read"
+                        ).authenticated()
+
+                        // REVIEW / AUTH - ADMIN
+                        .requestMatchers(
+                                "/api/reviews/**"
                         ).authenticated()
                         .anyRequest().authenticated()
                 )

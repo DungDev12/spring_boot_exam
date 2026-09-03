@@ -7,6 +7,7 @@ import com.example.srs.exceptions.UserAlreadyExistsException;
 import com.example.srs.models.entities.User;
 import com.example.srs.models.entities.dto.request.user.UserCreatedRequest;
 import com.example.srs.repositories.UserRepository;
+import com.example.srs.securities.CurrentUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class UserValidator {
 
     private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
     private final PasswordEncoder passwordEncoder;
 
     public void validateForCreate(
@@ -28,9 +30,7 @@ public class UserValidator {
     public void validateCanChangeRole(
             User targetUser
     ){
-        boolean targetIsAdmin = targetUser.getRoles()
-                .stream()
-                .anyMatch(role -> role.getName().equals("ADMIN"));
+        boolean targetIsAdmin = currentUserService.isAdmin();
         if(targetIsAdmin) {
             throw new AccessDeniedException("Không có quyền thay đổi vai trò của ADMIN", ERRORCODE.FORBIDDEN);
         }
@@ -39,9 +39,7 @@ public class UserValidator {
     public void validateCanDelete(
             User targetUser
     ){
-        boolean targetIsAdmin = targetUser.getRoles()
-                .stream()
-                .anyMatch(role -> role.getName().equals("ADMIN"));
+        boolean targetIsAdmin = currentUserService.isAdmin();
         if(targetIsAdmin) {
             throw new AccessDeniedException("Không được phép xoá tài khoản là ADMIN",ERRORCODE.FORBIDDEN);
         }
