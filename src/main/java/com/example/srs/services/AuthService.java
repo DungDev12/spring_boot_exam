@@ -7,4 +7,5 @@ import com.example.srs.models.entities.dto.response.user.UserLoginResponse;
 public interface AuthService {
     UserInfoResponse getCurrentUser();
     UserLoginResponse login(UserLoginRequest dto);
+    void logout(String jwtToken);
 }

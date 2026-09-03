@@ -144,7 +144,7 @@ public class CourseController {
     }
 
     @GetMapping("/{courseId}/reviews")
-    public ResponseEntity<?> getAllReview(
+    public ResponseEntity<ApiResponse<List<ReviewResponse>>> getAllReview(
             @PathVariable Long courseId,
             @Valid @ModelAttribute ReviewFilterRequest filter,
             @PageableDefault(

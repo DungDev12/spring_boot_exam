@@ -53,4 +53,14 @@ public class AuthController {
                                 "Lấy dữ liệu thành công")
                 );
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(
+            @RequestHeader("Authorization") String authorization
+    ){
+        authService.logout(authorization);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }

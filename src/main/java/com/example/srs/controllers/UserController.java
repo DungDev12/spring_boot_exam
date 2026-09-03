@@ -100,14 +100,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse<?>> deleteUserById(
+    public ResponseEntity<?> deleteUserById(
             @PathVariable Long userId
     ){
         userService.deleteUserById(userId);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
-                .body(ApiResponse
-                        .success("Xoá tài khoản "+userId+" thành công"));
+                .build();
     }
 
     @PutMapping("/{userId}")

@@ -64,6 +64,12 @@ public class SecurityConfig {
                                 "/api/lessons/**"
                         ).hasAnyRole("TEACHER", "ADMIN")
 
+                        // REPORT - ADMIN
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/reports",
+                                "/api/reports/**"
+                        ).hasRole("ADMIN")
                         // POST - ADMIN
                         .requestMatchers(
                                 HttpMethod.POST,

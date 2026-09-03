@@ -2,6 +2,7 @@ package com.example.srs.configs.security.jwt;
 
 import com.example.srs.enums.ERRORCODE;
 import com.example.srs.exceptions.JwtException;
+import com.example.srs.repositories.BlackListJwtRepository;
 import com.example.srs.securities.UserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.InvalidKeyException;
@@ -30,12 +31,24 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final UserDetailService userDetailService;
     private final JwtEntryPoint jwtEntryPoint;
+    private final BlackListJwtRepository blackListJwtRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
         try {
             if (token != null) {
+                if(blackListJwtRepository.existsById(
+                        jwtProvider.getJti(token)
+                )){
+                    exceptionEntryPoint(
+                            request,
+                            response,
+                            "Token đã bị vô hiệu hóa",
+                            ERRORCODE.INVALID_JWT_TOKEN,
+                            HttpStatus.UNAUTHORIZED);
+                    return;
+                }
                 jwtProvider.validateToken(token);
                 String username = jwtProvider.getUsernameFromToken(token);
                 UserDetails userDetails = userDetailService.loadUserByUsername(username);

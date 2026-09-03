@@ -3,6 +3,7 @@ package com.example.srs.configs.security.jwt;
 import com.example.srs.enums.ERRORCODE;
 import com.example.srs.exceptions.AccessDeniedException;
 import com.example.srs.securities.UserPrinciple;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -52,6 +53,12 @@ public class JwtProvider {
                 .build()
                 .parseSignedClaims(token);
     }
+
+    public String getJti(String token){
+        Claims claims = parseToken(token);
+        return claims.getId();
+    }
+
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(
@@ -61,5 +68,15 @@ public class JwtProvider {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    public Claims parseToken(String token){
+        return  Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(
+                        secretKey.getBytes(StandardCharsets.UTF_8)
+                ))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

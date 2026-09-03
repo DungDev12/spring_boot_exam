@@ -65,7 +65,7 @@ public class NotificationController {
     }
 
     @PutMapping("/{notificationId}/read")
-    public ResponseEntity<?> updateReadNotificationById(
+    public ResponseEntity<ApiResponse<NotificationResponse>> updateReadNotificationById(
             @PathVariable Long notificationId,
             @Valid @RequestBody UpdateReadNotificationRequest request
             ) {

@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class RoleController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll(
+    public ResponseEntity<ApiResponse<List<Role>>> getAll(
             @RequestParam(required = false) String search,
             @PageableDefault(
                     page = 0,
@@ -61,12 +63,15 @@ public class RoleController {
     }
 
     @PutMapping("/{roleId}")
-    public ResponseEntity<?> updateById(
+    public ResponseEntity<ApiResponse<Role>> updateById(
             @PathVariable Long roleId,
             @Valid @RequestBody UpdateRoleRequest dto
             ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(roleService.update(roleId,dto));
+                .body(ApiResponse.success(
+                        roleService.update(roleId,dto),
+                        "Cập nhật quyền thành công"
+                ));
     }
 }
