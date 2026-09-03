@@ -1,6 +1,7 @@
 package com.example.srs.configs.security.jwt;
 
 import com.example.srs.enums.ERRORCODE;
+import com.example.srs.exceptions.JwtException;
 import com.example.srs.models.entities.dto.response.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,17 +26,32 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.warn(
-                "Authentication failed: {} {} - {}",
+        ERRORCODE errorCode = ERRORCODE.UNAUTHORIZED;
+        String message = "Authentication is required";
+
+        if (authException instanceof JwtException jwtException) {
+
+            errorCode = jwtException.getErrorCode();
+            message = jwtException.getMessage();
+        }
+        log.warn("Authentication failed: {} {} from {} | User-Agent: {}",
                 request.getMethod(),
                 request.getRequestURI(),
-                authException.getMessage()
-        );
+                request.getRemoteAddr(),
+                request.getHeader("User-Agent"));
 
-        ErrorResponse<?> errorResponse = ErrorResponse.error(false, ERRORCODE.UNAUTHORIZED,"Authentication is required", 401);
+        ErrorResponse<?> errorResponse =
+                ErrorResponse.error(
+                        false,
+                        errorCode,
+                        message,
+                        HttpStatus.UNAUTHORIZED.value()
+                );
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        extracted(response);
+        response.setContentType("application/json");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
         objectMapper.writeValue(
                 response.getWriter(),
                 errorResponse

@@ -3,15 +3,15 @@ package com.example.srs.models.entities.dto.response;
 
 import com.example.srs.enums.ERRORCODE;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.*;
+import tools.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -43,4 +43,6 @@ public class ErrorResponse<T> {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+
 }

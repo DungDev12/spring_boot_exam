@@ -29,6 +29,7 @@ public class UserDetailService implements UserDetailsService {
 
         // convert User => UserPrinciple
         return new UserPrinciple(
+                user.getId(),
                 user,
                 user.getRoles().stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" +role.getName()))

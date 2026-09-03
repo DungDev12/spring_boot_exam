@@ -1,6 +1,9 @@
 package com.example.srs.configs.security.jwt;
 
+import com.example.srs.enums.ERRORCODE;
+import com.example.srs.exceptions.AccessDeniedException;
 import com.example.srs.securities.UserPrinciple;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -39,19 +42,15 @@ public class JwtProvider {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(
-                            secretKey.getBytes(StandardCharsets.UTF_8)
-                    ))
-                    .build()
-                    .parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        return false;
+    public void validateToken(String token) {
+        Jwts.parser()
+                .verifyWith(
+                        Keys.hmacShaKeyFor(
+                                secretKey.getBytes(StandardCharsets.UTF_8)
+                        )
+                )
+                .build()
+                .parseSignedClaims(token);
     }
     public String getUsernameFromToken(String token) {
         return Jwts.parser()

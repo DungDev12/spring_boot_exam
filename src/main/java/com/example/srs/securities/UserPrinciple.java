@@ -8,10 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserPrinciple implements UserDetails {
 
+    private  Long id;
     private User user;
 
     private Collection<? extends GrantedAuthority> authorities;

@@ -1,18 +1,13 @@
 package com.example.srs.models.entities;
 
+import com.example.srs.commons.entities.BaseEntity;
 import com.example.srs.commons.entities.Person;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,11 +16,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class User{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Builder
+public class User extends BaseEntity {
 
     @NotBlank(message = "Tài khoản không được để trống")
     private String username;
@@ -51,15 +43,15 @@ public class User{
 
     private boolean isActive;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @OneToMany(mappedBy = "teacher")
+    private List<Course> courses;
 
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "student")
+    private List<Enrollment> enrollments;
 
-    public void setPasswordHash(String password){
-        this.passwordHash= new BCryptPasswordEncoder().encode(password);
-    }
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "student")
+    private List<Review> reviews;
 }
