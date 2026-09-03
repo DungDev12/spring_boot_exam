@@ -2,6 +2,7 @@ package com.example.srs.services.impl;
 
 import com.example.srs.configs.security.jwt.JwtProvider;
 import com.example.srs.enums.ERRORCODE;
+import com.example.srs.exceptions.AccessDeniedException;
 import com.example.srs.exceptions.ResourceNotFoundException;
 import com.example.srs.models.entities.BlackListJwt;
 import com.example.srs.models.entities.User;
@@ -54,7 +55,9 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 "User not found: " + dto.username()));
-
+        if(!user.isActive()){
+            throw new AccessDeniedException("Người dùng không có quyền đăng nhập", ERRORCODE.FORBIDDEN);
+        }
         String token = jwtProvider.generateToken(userPrinciple);
         return new UserLoginResponse(
                 user.getUsername(),
